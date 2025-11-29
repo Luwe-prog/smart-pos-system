@@ -47,9 +47,9 @@ const PaymentModal = ({ isOpen, onClose, cartSummary, onConfirmPayment }) => {
         {/* Content */}
         <div className="p-6 space-y-6">
           {/* Total Amount */}
-          <div className="bg-primary bg-opacity-10 rounded-xl p-6 text-center">
+          <div className="bg-orange-900 bg-opacity-10 rounded-xl p-6 text-center">
             <p className="text-sm text-gray-600 mb-2">Total Amount</p>
-            <p className="text-4xl font-bold text-primary">
+            <p className="text-4xl font-bold text-orange-900">
               ₱{cartSummary.total.toFixed(2)}
             </p>
           </div>
@@ -64,12 +64,12 @@ const PaymentModal = ({ isOpen, onClose, cartSummary, onConfirmPayment }) => {
                 onClick={() => setPaymentType('cash')}
                 className={`p-4 rounded-xl border-2 transition-all duration-200 ${
                   paymentType === 'cash'
-                    ? 'border-primary bg-primary bg-opacity-10'
+                    ? 'border-orange-800 bg-orange-700 bg-opacity-10'
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
                 <Banknote className={`w-8 h-8 mx-auto mb-2 ${
-                  paymentType === 'cash' ? 'text-primary' : 'text-gray-400'
+                  paymentType === 'cash' ? 'text-orange-900' : 'text-gray-400'
                 }`} />
                 <p className="font-semibold text-sm">Cash</p>
               </button>
@@ -77,12 +77,12 @@ const PaymentModal = ({ isOpen, onClose, cartSummary, onConfirmPayment }) => {
                 onClick={() => setPaymentType('card')}
                 className={`p-4 rounded-xl border-2 transition-all duration-200 ${
                   paymentType === 'card'
-                    ? 'border-primary bg-primary bg-opacity-10'
+                    ? 'border-orange-900 bg-orange-700 bg-opacity-10'
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
                 <CreditCard className={`w-8 h-8 mx-auto mb-2 ${
-                  paymentType === 'card' ? 'text-primary' : 'text-gray-400'
+                  paymentType === 'card' ? 'text-orange-900' : 'text-gray-400'
                 }`} />
                 <p className="font-semibold text-sm">Card</p>
               </button>

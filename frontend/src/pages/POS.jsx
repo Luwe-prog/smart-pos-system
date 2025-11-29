@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Grid, List } from 'lucide-react';
+import { Search, Coffee } from 'lucide-react';
 import ProductCard from '../components/pos/ProductCard';
 import Cart from '../components/pos/Cart';
 import PaymentModal from '../components/pos/PaymentModal';
@@ -39,16 +39,15 @@ const POS = () => {
     }
   };
 
-const loadCategories = async () => {
-  try {
-    const response = await productsAPI.getCategories();
-    setCategories(['all', ...response.data]);
-  } catch (error) {
-    console.error('Error loading categories:', error);
-    // Fallback to default categories if API fails
-    setCategories(['all', 'Coffee', 'Pastry', 'Tea']);
-  }
-};
+  const loadCategories = async () => {
+    try {
+      const response = await productsAPI.getCategories();
+      setCategories(['all', ...response.data]);
+    } catch (error) {
+      console.error('Error loading categories:', error);
+      setCategories(['all', 'Coffee', 'Pastry', 'Tea']);
+    }
+  };
 
   const handleAddToCart = (product) => {
     const existingItem = cartItems.find(item => item.id === product.id);
@@ -103,7 +102,6 @@ const loadCategories = async () => {
       setShowPaymentModal(false);
       setShowReceiptModal(true);
       
-      // Reload products to update stock
       loadProducts();
     } catch (error) {
       console.error('Error processing sale:', error);
@@ -112,13 +110,31 @@ const loadCategories = async () => {
   };
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 relative overflow-hidden">
+      {/* Floating decorative elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(3)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute"
+            style={{
+              left: `${20 + i * 30}%`,
+              top: `${10 + i * 20}%`,
+              animation: `float ${3 + i}s ease-in-out infinite`,
+              animationDelay: `${i * 0.5}s`,
+            }}
+          >
+            <Coffee className="w-8 h-8 text-amber-300 opacity-10" />
+          </div>
+        ))}
+      </div>
+
       {/* Products Section */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden relative z-10">
         {/* Search & Filter Bar */}
-        <div className="bg-white border-b border-gray-100 p-6 space-y-4">
+        <div className="bg-white/80 backdrop-blur-sm border-b border-amber-200/50 p-6 space-y-4 shadow-lg">
           {/* Search */}
-          <div className="relative">
+          <div className="relative animate-fade-in-down">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
               type="text"
@@ -130,15 +146,15 @@ const loadCategories = async () => {
           </div>
 
           {/* Categories */}
-          <div className="flex items-center space-x-2 overflow-x-auto pb-2">
+          <div className="flex items-center space-x-2 overflow-x-auto pb-2 animate-fade-in-down" style={{ animationDelay: '0.1s' }}>
             {categories.map((category) => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
                 className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all duration-200 ${
                   selectedCategory === category
-                    ? 'bg-primary text-white shadow-md'
-                    : 'bg-gray-100 text-charcoal hover:bg-gray-200'
+                    ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg scale-105'
+                    : 'bg-white text-charcoal hover:bg-amber-50 shadow-sm'
                 }`}
               >
                 {category === 'all' ? 'All Products' : category}
@@ -153,16 +169,22 @@ const loadCategories = async () => {
             <LoadingSpinner />
           ) : products.length === 0 ? (
             <div className="text-center py-12">
+              <Coffee className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <p className="text-gray-500">No products found</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {products.map((product) => (
-                <ProductCard
+              {products.map((product, index) => (
+                <div
                   key={product.id}
-                  product={product}
-                  onAddToCart={handleAddToCart}
-                />
+                  className="animate-fade-in-up"
+                  style={{ animationDelay: `${index * 0.05}s` }}
+                >
+                  <ProductCard
+                    product={product}
+                    onAddToCart={handleAddToCart}
+                  />
+                </div>
               ))}
             </div>
           )}
@@ -170,7 +192,7 @@ const loadCategories = async () => {
       </div>
 
       {/* Cart Section */}
-      <div className="w-96 bg-white border-l border-gray-100">
+      <div className="w-96 bg-white/80 backdrop-blur-sm border-l border-amber-200/50 relative z-10">
         <Cart
           items={cartItems}
           onUpdateQuantity={handleUpdateQuantity}
@@ -193,6 +215,13 @@ const loadCategories = async () => {
         onClose={() => setShowReceiptModal(false)}
         sale={currentSale}
       />
+
+      <style>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0) rotate(0deg); }
+          50% { transform: translateY(-20px) rotate(180deg); }
+        }
+      `}</style>
     </div>
   );
 };

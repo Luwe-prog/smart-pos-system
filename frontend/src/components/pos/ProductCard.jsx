@@ -36,7 +36,7 @@ const ProductCard = ({ product, onAddToCart }) => {
         
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-lg font-bold text-primary">₱{parseFloat(product.price).toFixed(2)}</p>
+            <p className="text-lg font-bold text-orange-800 ">₱{parseFloat(product.price).toFixed(2)}</p>
             <p className="text-xs text-gray-400">Stock: {product.stock}</p>
           </div>
           
@@ -46,7 +46,7 @@ const ProductCard = ({ product, onAddToCart }) => {
             className={`p-2 rounded-lg transition-all duration-200 ${
               product.stock === 0
                 ? 'bg-gray-200 cursor-not-allowed'
-                : 'bg-primary hover:bg-primary-dark text-white shadow-md hover:shadow-lg active:scale-95'
+                : 'bg-orange-900 hover:bg-orange-700 text-white shadow-md hover:shadow-lg active:scale-95'
             }`}
           >
             <Plus className="w-5 h-5" />

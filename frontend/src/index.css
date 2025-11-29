@@ -6,43 +6,126 @@
 
 @layer base {
   body {
-    @apply bg-background text-charcoal font-sans;
+    @apply bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 text-charcoal font-sans;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-primary text-white px-6 py-3 rounded-lg font-semibold 
-           hover:bg-primary-dark transition-all duration-200 
-           shadow-md hover:shadow-lg active:scale-95;
+    @apply bg-gradient-to-r from-amber-500 to-orange-600 text-white px-6 py-3 rounded-lg font-semibold 
+           hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0
+           transition-all duration-200 shadow-lg;
   }
 
   .btn-secondary {
     @apply bg-white text-charcoal px-6 py-3 rounded-lg font-semibold 
-           border-2 border-gray-200 hover:border-primary 
+           border-2 border-gray-200 hover:border-amber-500 
            transition-all duration-200 shadow-sm hover:shadow-md;
   }
 
   .btn-accent {
-    @apply bg-accent text-white px-6 py-3 rounded-lg font-semibold 
-           hover:bg-accent-dark transition-all duration-200 
-           shadow-md hover:shadow-lg active:scale-95;
+    @apply bg-gradient-to-r from-orange-500 to-amber-600 text-white px-6 py-3 rounded-lg font-semibold 
+           hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0
+           transition-all duration-200 shadow-lg;
   }
 
   .card {
-    @apply bg-white rounded-xl shadow-card hover:shadow-card-hover 
-           transition-all duration-300;
+    @apply bg-white/80 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl 
+           transition-all duration-300 border border-white/50;
   }
 
   .input-field {
-    @apply w-full px-4 py-3 rounded-lg border-2 border-gray-200 
-           focus:border-primary focus:outline-none transition-colors duration-200;
+    @apply w-full px-4 py-3 rounded-lg border-2 border-gray-200 bg-white/50
+           focus:border-amber-500 focus:ring-4 focus:ring-amber-100 focus:outline-none 
+           transition-all duration-200 hover:border-amber-300;
   }
 
   .stat-card {
-    @apply card p-6 hover:scale-105 transition-transform duration-300;
+    @apply card p-6 hover:scale-105 transition-transform duration-300 animate-fade-in-up;
+  }
+
+  .page-header {
+    @apply animate-fade-in-down;
+  }
+
+  .content-section {
+    @apply animate-fade-in-up;
   }
 }
+
+/* Animations */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(251, 191, 36, 0.5);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out;
+}
+
+.animate-fade-in-down {
+  animation: fade-in-down 0.6s ease-out;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.6s ease-out;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animation-delay-100 { animation-delay: 0.1s; }
+.animation-delay-200 { animation-delay: 0.2s; }
+.animation-delay-300 { animation-delay: 0.3s; }
+.animation-delay-400 { animation-delay: 0.4s; }
+.animation-delay-500 { animation-delay: 0.5s; }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
@@ -51,15 +134,15 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #fef3c7;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #007AFF;
+  background: linear-gradient(to bottom, #f59e0b, #f97316);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #0051D5;
+  background: linear-gradient(to bottom, #d97706, #ea580c);
 }

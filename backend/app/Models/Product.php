@@ -7,16 +7,22 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     protected $fillable = [
-        'name', 'category', 'price', 'stock', 
-        'low_stock_threshold', 'image_path', 
-        'description', 'is_active'
+        'name',
+        'description',
+        'price',
+        'stock',
+        'category',
+        'image_path',
+        'sku',
+        'is_active',
+        'low_stock_threshold'
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
         'stock' => 'integer',
-        'low_stock_threshold' => 'integer',
         'is_active' => 'boolean',
+        'low_stock_threshold' => 'integer'
     ];
 
     public function saleItems()

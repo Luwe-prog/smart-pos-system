@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Search, AlertTriangle, X, Upload } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, AlertTriangle, X, Upload, Package, Coffee } from 'lucide-react';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { productsAPI } from '../services/api';
 
@@ -76,18 +76,26 @@ const Inventory = () => {
     setShowModal(true);
   };
 
-  const handleDeleteProduct = async (productId, productName) => {
-    if (window.confirm(`Are you sure you want to delete "${productName}"?`)) {
-      try {
-        await productsAPI.delete(productId);
-        alert('Product deleted successfully!');
-        loadProducts();
-      } catch (error) {
-        console.error('Error deleting product:', error);
-        alert('Error deleting product');
+const handleDeleteProduct = async (productId, productName) => {
+  if (window.confirm(`Are you sure you want to delete "${productName}"?`)) {
+    try {
+      const response = await productsAPI.delete(productId);
+      
+      // Check if it was deactivated vs deleted
+      if (response.data.deactivated) {
+        alert('⚠️ ' + response.data.message);
+      } else {
+        alert('✓ Product deleted successfully!');
       }
+      
+      loadProducts();
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      const errorMsg = error.response?.data?.message || 'Error deleting product';
+      alert('❌ ' + errorMsg);
     }
-  };
+  }
+};
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -105,7 +113,6 @@ const Inventory = () => {
         image: file
       }));
       
-      // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
@@ -114,78 +121,78 @@ const Inventory = () => {
     }
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  
-  try {
-    if (editingProduct) {
-      // UPDATE - Use POST with _method for FormData
-      const submitData = new FormData();
-      submitData.append('_method', 'PUT');
-      submitData.append('name', formData.name);
-      submitData.append('category', formData.category);
-      submitData.append('price', formData.price);
-      submitData.append('stock', formData.stock);
-      submitData.append('low_stock_threshold', formData.low_stock_threshold);
-      submitData.append('description', formData.description);
-      
-      if (formData.image) {
-        submitData.append('image', formData.image);
-      }
-
-      // Use POST instead of PUT for FormData
-      const response = await fetch(`http://localhost:8000/api/products/${editingProduct.id}`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
-        },
-        body: submitData,
-      });
-
-      if (!response.ok) {
-        throw new Error('Update failed');
-      }
-
-      alert('Product updated successfully!');
-    } else {
-      // CREATE - Normal FormData
-      const submitData = new FormData();
-      submitData.append('name', formData.name);
-      submitData.append('category', formData.category);
-      submitData.append('price', formData.price);
-      submitData.append('stock', formData.stock);
-      submitData.append('low_stock_threshold', formData.low_stock_threshold);
-      submitData.append('description', formData.description);
-      
-      if (formData.image) {
-        submitData.append('image', formData.image);
-      }
-
-      await productsAPI.create(submitData);
-      alert('Product created successfully!');
-    }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     
-    setShowModal(false);
-    loadProducts();
-  } catch (error) {
-    console.error('Error saving product:', error);
-    alert(error.response?.data?.message || 'Error saving product');
-  }
-};
+    try {
+      const submitData = new FormData();
+      submitData.append('name', formData.name);
+      submitData.append('category', formData.category);
+      submitData.append('price', formData.price);
+      submitData.append('stock', formData.stock);
+      submitData.append('low_stock_threshold', formData.low_stock_threshold);
+      submitData.append('description', formData.description);
+      
+      if (formData.image) {
+        submitData.append('image', formData.image);
+      }
+
+      if (editingProduct) {
+        submitData.append('_method', 'PUT');
+        
+        const token = localStorage.getItem('auth_token');
+        const response = await fetch(
+          `http://localhost:8000/api/products/${editingProduct.id}`,
+          {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Accept': 'application/json',
+            },
+            body: submitData,
+          }
+        );
+
+        if (!response.ok) throw new Error('Update failed');
+        alert('Product updated successfully!');
+      } else {
+        await productsAPI.create(submitData);
+        alert('Product created successfully!');
+      }
+      
+      setShowModal(false);
+      loadProducts();
+    } catch (error) {
+      console.error('Error saving product:', error);
+      alert(error.response?.data?.message || 'Error saving product');
+    }
+  };
 
   if (loading) return <LoadingSpinner fullScreen />;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 relative min-h-screen">
+      {/* Decorative background */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-20 right-20 w-72 h-72 bg-amber-200 rounded-full blur-3xl opacity-20 animate-pulse"></div>
+        <div className="absolute bottom-20 left-20 w-72 h-72 bg-orange-200 rounded-full blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '1s' }}></div>
+      </div>
+
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between relative z-10 animate-fade-in-down">
         <div>
-          <h1 className="text-3xl font-bold text-charcoal">Inventory Management</h1>
-          <p className="text-gray-500 mt-1">Manage your products and stock levels</p>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent">
+            Inventory Management
+          </h1>
+          <p className="text-gray-600 mt-1 flex items-center">
+            <Package className="w-4 h-4 mr-2 text-amber-600" />
+            Manage your products and stock levels
+          </p>
         </div>
         <button 
           onClick={handleAddProduct}
-          className="btn-primary flex items-center space-x-2"
+          className="btn-primary flex items-center space-x-2 animate-fade-in-down"
+          style={{ animationDelay: '0.1s' }}
         >
           <Plus className="w-5 h-5" />
           <span>Add Product</span>
@@ -193,7 +200,7 @@ const handleSubmit = async (e) => {
       </div>
 
       {/* Filters */}
-      <div className="card p-4 flex items-center space-x-4">
+      <div className="card p-4 flex items-center space-x-4 relative z-10 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
           <input
@@ -208,8 +215,8 @@ const handleSubmit = async (e) => {
           onClick={() => setShowLowStock(!showLowStock)}
           className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center space-x-2 ${
             showLowStock
-              ? 'bg-red-500 text-white'
-              : 'bg-gray-100 text-charcoal hover:bg-gray-200'
+              ? 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg'
+              : 'bg-white text-charcoal hover:bg-gray-50 shadow-sm border border-gray-200'
           }`}
         >
           <AlertTriangle className="w-5 h-5" />
@@ -218,10 +225,10 @@ const handleSubmit = async (e) => {
       </div>
 
       {/* Products Table */}
-      <div className="card overflow-hidden">
+      <div className="card overflow-hidden relative z-10 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-gradient-to-r from-amber-50 to-orange-50 border-b-2 border-amber-200">
               <tr>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-charcoal">Product</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-charcoal">Category</th>
@@ -235,27 +242,32 @@ const handleSubmit = async (e) => {
               {products.length === 0 ? (
                 <tr>
                   <td colSpan="6" className="px-6 py-12 text-center text-gray-500">
-                    No products found
+                    <Coffee className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                    <p>No products found</p>
                   </td>
                 </tr>
               ) : (
-                products.map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-50 transition-colors">
+                products.map((product, index) => (
+                  <tr 
+                    key={product.id} 
+                    className="hover:bg-amber-50/50 transition-colors animate-fade-in-up"
+                    style={{ animationDelay: `${index * 0.05}s` }}
+                  >
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+                        <div className="w-12 h-12 bg-gradient-to-br from-amber-100 to-orange-100 rounded-lg overflow-hidden flex-shrink-0 border-2 border-amber-200">
                           {product.image_path ? (
                             <img
                               src={`http://localhost:8000/storage/${product.image_path}`}
                               alt={product.name}
                               className="w-full h-full object-cover"
                               onError={(e) => {
-                               e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"%3E%3Crect fill="%23e5e7eb" width="48" height="48"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="10" fill="%239ca3af"%3ENo Image%3C/text%3E%3C/svg%3E';
+                                e.target.style.display = 'none';
                               }}
                             />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
-                              No Image
+                            <div className="w-full h-full flex items-center justify-center">
+                              <Coffee className="w-6 h-6 text-amber-400" />
                             </div>
                           )}
                         </div>
@@ -266,7 +278,7 @@ const handleSubmit = async (e) => {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="px-3 py-1 bg-primary bg-opacity-10 text-primary rounded-full text-sm font-medium">
+                      <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium">
                         {product.category}
                       </span>
                     </td>
@@ -300,7 +312,7 @@ const handleSubmit = async (e) => {
                       <div className="flex items-center justify-end space-x-2">
                         <button 
                           onClick={() => handleEditProduct(product)}
-                          className="p-2 text-primary hover:bg-primary hover:bg-opacity-10 rounded-lg transition-colors"
+                          className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
                           title="Edit product"
                         >
                           <Edit className="w-4 h-4" />
@@ -323,24 +335,24 @@ const handleSubmit = async (e) => {
       </div>
 
       {/* Stats Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="card p-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 relative z-10">
+        <div className="card p-6 border-l-4 border-amber-500 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
           <p className="text-sm text-gray-500 mb-2">Total Products</p>
-          <p className="text-3xl font-bold text-primary">{products.length}</p>
+          <p className="text-3xl font-bold text-amber-700">{products.length}</p>
         </div>
-        <div className="card p-6">
+        <div className="card p-6 border-l-4 border-red-500 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
           <p className="text-sm text-gray-500 mb-2">Low Stock Items</p>
           <p className="text-3xl font-bold text-red-600">
             {products.filter(p => p.stock <= p.low_stock_threshold).length}
           </p>
         </div>
-        <div className="card p-6">
+        <div className="card p-6 border-l-4 border-green-500 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
           <p className="text-sm text-gray-500 mb-2">Total Stock Value</p>
           <p className="text-3xl font-bold text-green-600">
             ₱{products.reduce((sum, p) => sum + (parseFloat(p.price) * p.stock), 0).toFixed(2)}
           </p>
         </div>
-        <div className="card p-6">
+        <div className="card p-6 border-l-4 border-purple-500 animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
           <p className="text-sm text-gray-500 mb-2">Categories</p>
           <p className="text-3xl font-bold text-purple-600">
             {new Set(products.map(p => p.category)).size}
@@ -351,10 +363,11 @@ const handleSubmit = async (e) => {
       {/* Add/Edit Product Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl max-w-2xl w-full shadow-2xl my-8">
+          <div className="bg-white rounded-2xl max-w-2xl w-full shadow-2xl my-8 animate-slide-up">
             {/* Modal Header */}
-            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-charcoal">
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-amber-50 to-orange-50">
+              <h2 className="text-2xl font-bold text-charcoal flex items-center">
+                <Coffee className="w-6 h-6 mr-2 text-amber-600" />
                 {editingProduct ? 'Edit Product' : 'Add New Product'}
               </h2>
               <button
@@ -366,7 +379,7 @@ const handleSubmit = async (e) => {
             </div>
 
             {/* Modal Body */}
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Product Name */}
                 <div>
@@ -403,7 +416,7 @@ const handleSubmit = async (e) => {
                 {/* Price */}
                 <div>
                   <label className="block text-sm font-semibold text-charcoal mb-2">
-                    Price ($) *
+                    Price (₱) *
                   </label>
                   <input
                     type="number"
@@ -411,7 +424,7 @@ const handleSubmit = async (e) => {
                     value={formData.price}
                     onChange={handleInputChange}
                     className="input-field"
-                    placeholder="3.50"
+                    placeholder="150.00"
                     step="0.01"
                     min="0"
                     required
@@ -477,7 +490,7 @@ const handleSubmit = async (e) => {
                   <label className="block text-sm font-semibold text-charcoal mb-2">
                     Preview
                   </label>
-                  <div className="w-32 h-32 bg-gray-100 rounded-lg overflow-hidden">
+                  <div className="w-32 h-32 bg-gradient-to-br from-amber-100 to-orange-100 rounded-lg overflow-hidden border-2 border-amber-200">
                     <img
                       src={imagePreview}
                       alt="Preview"
@@ -501,27 +514,43 @@ const handleSubmit = async (e) => {
                   rows="3"
                 />
               </div>
+            </div>
 
-              {/* Buttons */}
-              <div className="flex space-x-3 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="btn-secondary flex-1"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="btn-primary flex-1"
-                >
-                  {editingProduct ? 'Update Product' : 'Create Product'}
-                </button>
-              </div>
-            </form>
+            {/* Modal Footer */}
+            <div className="p-6 border-t border-gray-100 flex space-x-3 bg-gradient-to-r from-amber-50 to-orange-50">
+              <button
+                onClick={() => setShowModal(false)}
+                className="btn-secondary flex-1"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSubmit}
+                className="btn-primary flex-1"
+              >
+                {editingProduct ? 'Update Product' : 'Create Product'}
+              </button>
+            </div>
           </div>
         </div>
       )}
+
+      <style>{`
+        @keyframes slide-up {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-slide-up {
+          animation: slide-up 0.3s ease-out;
+        }
+      `}</style>
     </div>
   );
 };

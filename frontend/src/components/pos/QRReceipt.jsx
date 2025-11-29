@@ -74,7 +74,7 @@ const QRReceipt = ({ isOpen, onClose, sale }) => {
             )}
             <div className="flex justify-between pt-2 border-t border-gray-200">
               <span className="text-gray-600 font-semibold">Total</span>
-              <span className="font-bold text-lg text-primary">
+              <span className="font-bold text-lg text-orange-900">
                 ₱{parseFloat(sale.total_amount).toFixed(2)}
               </span>
             </div>

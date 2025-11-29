@@ -29,7 +29,7 @@ const Cart = ({ items, onUpdateQuantity, onRemoveItem, onCheckout }) => {
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
                   <h4 className="font-semibold text-charcoal">{item.name}</h4>
-                  <p className="text-sm text-primary font-bold">₱{item.price}</p>
+                  <p className="text-sm text-black font-bold">₱{item.price}</p>
                 </div>
                 <button
                   onClick={() => onRemoveItem(item.id)}
@@ -51,7 +51,7 @@ const Cart = ({ items, onUpdateQuantity, onRemoveItem, onCheckout }) => {
                   <button
                     onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
                     disabled={item.quantity >= item.stock}
-                    className="w-8 h-8 rounded-lg bg-primary hover:bg-primary-dark text-white flex items-center justify-center transition-colors disabled:bg-gray-200 disabled:cursor-not-allowed"
+                    className="w-8 h-8 rounded-lg bg-orange-900 hover:bg-orange-600 text-white flex items-center justify-center transition-colors disabled:bg-gray-200 disabled:cursor-not-allowed"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
@@ -79,7 +79,7 @@ const Cart = ({ items, onUpdateQuantity, onRemoveItem, onCheckout }) => {
             </div>
             <div className="flex justify-between text-lg font-bold pt-2 border-t border-gray-200">
               <span>Total</span>
-              <span className="text-primary">₱{total.toFixed(2)}</span>
+              <span className="text-orange-900">₱{total.toFixed(2)}</span>
             </div>
           </div>
 
