@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Coffee, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -10,6 +11,48 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
+const [displayedText, setDisplayedText] = useState('');
+const fullText = 'ButterBean Cafe'; // Change this to your cafe name
+const typingSpeed = 100; // Speed in milliseconds
+
+useEffect(() => {
+  let currentIndex = 0;
+  let isDeleting = false;
+  let typingInterval;
+  
+  const animate = () => {
+    typingInterval = setInterval(() => {
+      if (!isDeleting && currentIndex <= fullText.length) {
+        // Typing forward
+        setDisplayedText(fullText.slice(0, currentIndex));
+        currentIndex++;
+      } else if (!isDeleting && currentIndex > fullText.length) {
+        // Pause before deleting
+        clearInterval(typingInterval);
+        setTimeout(() => {
+          isDeleting = true;
+          animate();
+        }, 2000); // Pause at the end
+      } else if (isDeleting && currentIndex > 0) {
+        // Deleting backward
+        currentIndex--;
+        setDisplayedText(fullText.slice(0, currentIndex));
+      } else if (isDeleting && currentIndex === 0) {
+        // Pause before retyping
+        clearInterval(typingInterval);
+        setTimeout(() => {
+          isDeleting = false;
+          animate();
+        }, 500); // Short pause before restart
+      }
+    }, isDeleting ? 50 : 100); // Faster deletion, slower typing
+  };
+  
+  animate();
+
+  return () => clearInterval(typingInterval);
+}, []);
+
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -65,9 +108,10 @@ const Login = () => {
               <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl shadow-lg mb-4 transform hover:scale-110 transition-transform duration-300">
                 <Coffee className="w-10 h-10 text-white animate-bounce-slow" />
               </div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent mb-2">
-                ButterBean Cafe 
-              </h1>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent animate-fade-in">
+  {displayedText}
+  <span className="animate-blink ml-1">|</span>
+</h1>
               <p className="text-gray-600 text-sm">Welcome back! Please sign in to continue</p>
             </div>
 
@@ -261,6 +305,35 @@ const Login = () => {
         .animation-delay-4000 {
           animation-delay: 4s;
         }
+       
+       @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+  
+  .animate-blink {
+    animation: blink 1s infinite;
+  }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .animate-blink {
+    animation: blink 1s infinite;
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-out;
+  }
+
+        
       `}</style>
     </div>
   );
