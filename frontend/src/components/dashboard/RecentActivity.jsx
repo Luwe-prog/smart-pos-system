@@ -13,10 +13,10 @@ const RecentActivity = ({ sales }) => {
           sales.map((sale) => (
             <div 
               key={sale.id} 
-              className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              className="flex items-center justify-between p-4 bg-orange-50 rounded-lg hover:bg-gray-100 transition-colors"
             >
               <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
                   <Banknote className="w-5 h-5 text-white" />
                 </div>
                 <div>
@@ -33,7 +33,7 @@ const RecentActivity = ({ sales }) => {
               </div>
               
               <div className="text-right">
-                <p className="font-bold text-primary">
+                <p className="font-bold text-orange-700">
                   ₱{parseFloat(sale.total_amount).toFixed(2)}
                 </p>
                 <p className="text-xs text-gray-500 capitalize">

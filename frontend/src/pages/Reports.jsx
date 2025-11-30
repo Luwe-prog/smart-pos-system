@@ -146,7 +146,7 @@ const Reports = () => {
         doc.setTextColor(150, 150, 150);
         const pageHeight = doc.internal.pageSize.getHeight();
         doc.text(
-          `Page ${i} of ${pageCount} | Smart Cafe POS`,
+          `Page ${i} of ${pageCount} | ButterBean Cafe`,
           pageWidth / 2,
           pageHeight - 10,
           { align: 'center' }

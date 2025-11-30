@@ -66,7 +66,7 @@ const Login = () => {
                 <Coffee className="w-10 h-10 text-white animate-bounce-slow" />
               </div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent mb-2">
-                Smart Café POS
+                ButterBean Cafe 
               </h1>
               <p className="text-gray-600 text-sm">Welcome back! Please sign in to continue</p>
             </div>
@@ -161,7 +161,7 @@ const Login = () => {
 
             {/* Footer */}
             <div className="mt-6 text-center text-xs text-gray-500 animate-fade-in animation-delay-1200">
-              <p>© 2025 Smart Café POS. All rights reserved.</p>
+              <p>© 2025 ButterBean Cafe. All rights reserved.</p>
             </div>
           </div>
         </div>

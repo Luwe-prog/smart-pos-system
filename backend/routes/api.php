@@ -40,5 +40,6 @@ Route::middleware('auth:sanctum')->group(function () {
         
         // Users Management
         Route::apiResource('users', UserController::class);
+
     });
 });

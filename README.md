@@ -1,4 +1,4 @@
-# Smart POS System 🏪
+# ButterBean Cafe 🏪
 
 A modern Point of Sale system with QR receipt generation and comprehensive sales analytics, built for café management.
 

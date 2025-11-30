@@ -7,6 +7,7 @@ import QRReceipt from '../components/pos/QRReceipt';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { productsAPI, salesAPI } from '../services/api';
 
+
 const POS = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);

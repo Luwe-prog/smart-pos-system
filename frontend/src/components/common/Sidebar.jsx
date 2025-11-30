@@ -39,7 +39,7 @@ const Sidebar = () => {
           </div>
           <div>
             <h1 className="text-xl font-bold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent">
-              Smart Café
+             ButterBean Cafe
             </h1>
             <p className="text-xs text-gray-600">POS System</p>
           </div>
